@@ -35,6 +35,7 @@ class DataExporter:
         for m in all_data:
             match = {
                 'match_id': m['metadata']['match_id'],
+                'match_datetime': m['info']['game_datetime'],
                 'match_length': m['info']['game_length'],
             }
             m_data.append(match)
