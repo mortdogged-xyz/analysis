@@ -6,6 +6,7 @@ import json
 import time
 import hashlib
 import os
+import glob
 
 
 class Region(BaseModel):
