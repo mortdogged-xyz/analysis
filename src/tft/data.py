@@ -136,5 +136,4 @@ class DataLoader:
             data[f] = df
 
         dt = Data(**data)
-        print(dt)
-        print(dt.participants.join(dt.units, lsuffix='_p', rsuffix='_units'))
+        return dt
