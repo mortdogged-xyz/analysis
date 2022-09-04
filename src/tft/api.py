@@ -30,6 +30,7 @@ class Scraper:
     def clean_cache(self):
         files = glob.glob(f"{self.cache_dir}/get-*.json")
         for f in files:
+            info(f"Removing stale {f}")
             os.remove(f)
 
     def region_cfg(self) -> Region:
