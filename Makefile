@@ -11,7 +11,7 @@ load:
 
 scrape-loop:
 	$(MAKE) scrape export
-	$(shell sleep 120)
+	sleep 120
 	$(MAKE) scrape-loop
 
 jupyter:
