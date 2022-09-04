@@ -9,18 +9,30 @@ coloredlogs.install(level='DEBUG')
 
 config: Config
 
+
 def scrape(args, config: Config):
-    scraper = Scraper(token=config.riot.token, region=config.scrape.region, cache_dir=config.scrape.cache_dir, sleep=config.scrape.sleep,)
+    scraper = Scraper(
+        token=config.riot.token,
+        region=config.scrape.region,
+        cache_dir=config.scrape.cache_dir,
+        sleep=config.scrape.sleep,
+    )
     for league in config.scrape.leagues:
         scraper.scrape_league(league)
 
+
 def export(args, config: Config):
-    exporter = DataExporter(cache_dir=config.scrape.cache_dir, data_dir=config.scrape.data_dir,)
+    exporter = DataExporter(
+        cache_dir=config.scrape.cache_dir,
+        data_dir=config.scrape.data_dir,
+    )
     exporter.export_all()
+
 
 def load(args, config: Config):
     loader = DataLoader(data_dir=config.scrape.data_dir)
     loader.load_all()
+
 
 parser = argparse.ArgumentParser(description='TFT')
 

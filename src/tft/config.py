@@ -1,6 +1,7 @@
 import yaml
 from pydantic import BaseModel
-from typing import List 
+from typing import List
+
 
 class ScrapeConfig(BaseModel):
     region: str
@@ -9,12 +10,15 @@ class ScrapeConfig(BaseModel):
     sleep: int
     leagues: List[str]
 
+
 class RiotConfig(BaseModel):
     token: str
+
 
 class Config(BaseModel):
     riot: RiotConfig
     scrape: ScrapeConfig
+
 
 def read_config(fname) -> Config:
     with open(fname, 'r') as stream:

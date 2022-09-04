@@ -5,8 +5,10 @@ from logging import info
 from dataclasses import dataclass
 from typing import List
 
-def select_keys(coll, keys, rename = dict()):
+
+def select_keys(coll, keys, rename=dict()):
     return dict((rename.get(k, k), v) for k, v in coll.items() if k in keys)
+
 
 @dataclass
 class DataExporter:
@@ -59,9 +61,7 @@ class DataExporter:
                         'style',
                         'tier_current',
                         'tier_total',
-                    ], {
-                        'name': 'trait'
-                    })
+                    ], {'name': 'trait'})
                     t_data.append(trait | participant | match)
 
                 for u in p['units']:
@@ -72,9 +72,7 @@ class DataExporter:
                         'name',
                         'rarity',
                         'tier',
-                    ], {
-                        'name': 'character_name'
-                    })
+                    ], {'name': 'character_name'})
                     u_data.append(unit | unit_data | participant | match)
 
                     for i in u['itemNames']:
@@ -100,12 +98,11 @@ class DataExporter:
         self.to_file(trait_df, "traits")
         self.to_file(unit_df, "units")
         self.to_file(item_df, "items")
-    
+
     def to_file(self, df: pd.DataFrame, fname: str):
         path = f"{self.data_dir}/{fname}.csv"
         info(f"Writing {path}")
         df.to_csv(path, index=False)
-
 
 
 @dataclass
@@ -115,6 +112,7 @@ class Data:
     traits: pd.DataFrame
     units: pd.DataFrame
     items: pd.DataFrame
+
 
 @dataclass
 class DataLoader:

@@ -7,6 +7,7 @@ import time
 import hashlib
 import os
 
+
 class Region(BaseModel):
     region: str
     gateway: str
@@ -17,6 +18,7 @@ __REGIONS__ = {
     "CN": Region(region="cn1", gateway="asia"),
 }
 
+
 @dataclass
 class Scraper:
     token: str
@@ -24,11 +26,15 @@ class Scraper:
     region: str = "NA"
     sleep: int = 1
 
-
     def region_cfg(self) -> Region:
         return __REGIONS__[self.region]
 
-    def __get__(self, routing: str, path: str, cache_key: str = "get"):
+    def __get__(
+        self,
+        routing: str,
+        path: str,
+        cache_key: str = "get",
+    ):
         url = f"https://{routing}.api.riotgames.com/{path}"
         hash = hashlib.md5(url.encode("utf-8")).hexdigest()
         fname = f"{cache_key}-{hash}.json"
@@ -51,20 +57,34 @@ class Scraper:
         return data
 
     def get_league(self, league: str):
-        return self.__get__(self.region_cfg().region, f"tft/league/v1/{league}")
+        return self.__get__(self.region_cfg().region,
+                            f"tft/league/v1/{league}")
 
     def get_summoner(self, id: str):
-        return self.__get__(self.region_cfg().region, f"tft/summoner/v1/summoners/{id}", cache_key="summoner",)
+        return self.__get__(
+            self.region_cfg().region,
+            f"tft/summoner/v1/summoners/{id}",
+            cache_key="summoner",
+        )
 
     def get_matches_for(self, puuid: str):
-        return self.__get__(self.region_cfg().gateway, f"tft/match/v1/matches/by-puuid/{puuid}/ids", cache_key="summoner",)
+        return self.__get__(
+            self.region_cfg().gateway,
+            f"tft/match/v1/matches/by-puuid/{puuid}/ids",
+            cache_key="summoner",
+        )
 
     def get_match(self, id: str):
-        return self.__get__(self.region_cfg().gateway, f"tft/match/v1/matches/{id}", cache_key="match",)
+        return self.__get__(
+            self.region_cfg().gateway,
+            f"tft/match/v1/matches/{id}",
+            cache_key="match",
+        )
 
     def scrape_league(self, league: str):
         league_data = self.get_league(league)
-        summoners = list(map(lambda d: d["summonerId"], league_data["entries"]))
+        summoners = list(map(lambda d: d["summonerId"],
+                             league_data["entries"]))
         info(len(summoners))
         all_matches = []
         for summoner in summoners:
