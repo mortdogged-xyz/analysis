@@ -82,7 +82,7 @@ def select_keys(coll, keys, rename = dict()):
     return dict((rename.get(k, k), v) for k, v in coll.items() if k in keys)
 
 @dataclass
-class DataImporter:
+class DataExporter:
     cache_dir: str
     data_dir: str
 
