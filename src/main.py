@@ -17,6 +17,7 @@ def scrape(args, config: Config):
         cache_dir=config.scrape.cache_dir,
         sleep=config.scrape.sleep,
     )
+    scraper.clean_cache()
     for league in config.scrape.leagues:
         scraper.scrape_league(league)
 
