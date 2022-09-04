@@ -109,7 +109,6 @@ class DataExporter:
 
 @dataclass
 class Data:
-    matches: pd.DataFrame
     participants: pd.DataFrame
     augments: pd.DataFrame
     traits: pd.DataFrame
@@ -122,7 +121,6 @@ class DataLoader:
 
     def load_all(self, files: List[str] = []):
         files = files or [
-            "matches",
             "participants",
             "augments",
             "traits",
@@ -132,7 +130,7 @@ class DataLoader:
         data = {}
         for f in files:
             path = f"{self.data_dir}/{f}.csv"
-            df = pd.read_csv(path)
+            df = pd.read_csv(path, index_col=['match_id', 'puuid'])
             data[f] = df
         dt = Data(**data)
         print(dt)
