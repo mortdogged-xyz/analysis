@@ -6,6 +6,7 @@ import json
 import time
 import hashlib
 import os
+import glob
 
 class Region(BaseModel):
     region: str
@@ -75,3 +76,11 @@ class Scraper:
         info(f"Scraping {len(all_matches)} matches")
         for match_id in all_matches:
             self.get_match(match_id)
+
+@dataclass
+class DataImporter:
+    cache_dir: str
+
+    def import_all(self):
+        files = glob(f"{self.cache_dir}/match-*.json")
+        info(files)

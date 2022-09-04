@@ -3,6 +3,7 @@ riot:
 scrape:
   region: NA
   cache_dir: ./cache
+  data_dir: ./data
   sleep: 1
   leagues:
     - challenger

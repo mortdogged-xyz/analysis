@@ -5,6 +5,7 @@ from typing import List
 class ScrapeConfig(BaseModel):
     region: str
     cache_dir: str
+    data_dir: str
     sleep: int
     leagues: List[str]
 
