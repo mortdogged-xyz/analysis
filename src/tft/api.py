@@ -80,7 +80,8 @@ class Scraper:
 @dataclass
 class DataImporter:
     cache_dir: str
+    data_dir: str
 
     def import_all(self):
-        files = glob(f"{self.cache_dir}/match-*.json")
+        files = glob.glob(f"{self.cache_dir}/match-*.json")
         info(files)
