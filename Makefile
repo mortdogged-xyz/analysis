@@ -15,4 +15,4 @@ scrape-loop:
 	$(MAKE) scrape-loop
 
 jupyter:
-	poetry run jupyter notebook
+	poetry run jupyter notebook --config ./jupyter_notebook_config.py
