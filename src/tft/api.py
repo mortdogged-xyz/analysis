@@ -7,6 +7,7 @@ import time
 import hashlib
 import os
 import glob
+import pandas as pd
 
 class Region(BaseModel):
     region: str
@@ -85,3 +86,9 @@ class DataImporter:
     def import_all(self):
         files = glob.glob(f"{self.cache_dir}/match-*.json")
         info(files)
+
+        for file in files:
+            with open(file, 'r') as f:
+                df = pd.read_json(f)
+                info(df.head())
+            return
