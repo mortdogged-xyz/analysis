@@ -6,8 +6,6 @@ import json
 import time
 import hashlib
 import os
-import glob
-import pandas as pd
 
 class Region(BaseModel):
     region: str
@@ -77,6 +75,3 @@ class Scraper:
         info(f"Scraping {len(all_matches)} matches")
         for match_id in all_matches:
             self.get_match(match_id)
-
-def select_keys(coll, keys, rename = dict()):
-    return dict((rename.get(k, k), v) for k, v in coll.items() if k in keys)
