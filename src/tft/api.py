@@ -26,6 +26,11 @@ class Scraper:
     region: str = "NA"
     sleep: int = 1
 
+    def clean_cache(self):
+        files = glob.glob(f"{self.cache_dir}/get-*.json")
+        for f in files:
+            os.remove(f)
+
     def region_cfg(self) -> Region:
         return __REGIONS__[self.region]
 

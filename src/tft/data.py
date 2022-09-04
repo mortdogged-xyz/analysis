@@ -1,7 +1,6 @@
 import glob
 import json
 import pandas as pd
-import os
 from logging import info
 from dataclasses import dataclass
 from typing import List
@@ -15,11 +14,6 @@ def select_keys(coll, keys, rename=dict()):
 class DataExporter:
     cache_dir: str
     data_dir: str
-
-    def clean_cache(self):
-        files = glob.glob(f"{self.cache_dir}/get-*.json")
-        for f in files:
-            os.remove(f)
 
     def export_all(self):
         files = glob.glob(f"{self.cache_dir}/match-*.json")
