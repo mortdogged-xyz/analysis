@@ -8,3 +8,6 @@ export:
 
 load:
 	$(MAIN) load
+
+jupyter:
+	poetry run jupyter notebook
