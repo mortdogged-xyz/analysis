@@ -1,0 +1,8 @@
+riot:
+  token: RGAPI-KEY
+scrape:
+  region: NA
+  cache_dir: ./cache
+  sleep: 1
+  leagues:
+    - challenger
