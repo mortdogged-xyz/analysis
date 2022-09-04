@@ -5,3 +5,6 @@ scrape:
 
 export:
 	$(MAIN) export
+
+load:
+	$(MAIN) load
