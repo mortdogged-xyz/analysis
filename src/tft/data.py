@@ -13,9 +13,10 @@ class DataExporter:
     cache_dir: str
     data_dir: str
 
-    def import_all(self):
+    def export_all(self):
         files = glob.glob(f"{self.cache_dir}/match-*.json")
-        info(len(files))
+        info(f"Exporting {len(files)} match files")
+
         all_data = []
         m_data = []
         p_data = []
@@ -38,10 +39,10 @@ class DataExporter:
 
             for p in m['info']['participants']:
                 participant = select_keys(p, [
-                    'puuid'
+                    'puuid',
+                    'placement',
                 ])
                 participant_data = select_keys(p, [
-                    'placement',
                     'level',
                     'total_damage_to_players',
                     'last_round',
@@ -127,10 +128,13 @@ class DataLoader:
             "units",
             "items",
         ]
+
         data = {}
         for f in files:
             path = f"{self.data_dir}/{f}.csv"
             df = pd.read_csv(path, index_col=['match_id', 'puuid'])
             data[f] = df
+
         dt = Data(**data)
         print(dt)
+        print(dt.participants.join(dt.units))

@@ -16,7 +16,7 @@ def scrape(args, config: Config):
 
 def export(args, config: Config):
     exporter = DataExporter(cache_dir=config.scrape.cache_dir, data_dir=config.scrape.data_dir,)
-    exporter.import_all()
+    exporter.export_all()
 
 def load(args, config: Config):
     loader = DataLoader(data_dir=config.scrape.data_dir)
