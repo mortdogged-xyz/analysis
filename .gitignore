@@ -1,5 +1,5 @@
-cache/
-data/
+cache
+data
 **/*/*.pyc
 config.yaml
 *.log
