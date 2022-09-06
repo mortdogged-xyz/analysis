@@ -11,6 +11,7 @@ pydantic = "^1.10.1"
 PyYAML = "^6.0"
 coloredlogs = "^15.0.1"
 requests = "^2.28.1"
+matplotlib = "^3.5.3"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"
