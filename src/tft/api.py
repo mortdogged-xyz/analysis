@@ -41,12 +41,18 @@ class Scraper:
         routing: str,
         path: str,
         cache_key: str = "get",
+        skip_read: bool = False,
     ):
         url = f"https://{routing}.api.riotgames.com/{path}"
         hash = hashlib.md5(url.encode("utf-8")).hexdigest()
         fname = f"{cache_key}-{hash}.json"
         fpath = f"{self.cache_dir}/{fname}"
+
         if os.path.exists(fpath):
+            if skip_read:
+                info(f"Skipping {fpath} (already exists)")
+                return None
+
             with open(fpath, 'r') as f:
                 info(f"Reading {fpath}")
                 data = json.loads(f.read())
@@ -86,6 +92,7 @@ class Scraper:
             self.region_cfg().gateway,
             f"tft/match/v1/matches/{id}",
             cache_key="match",
+            skip_read=True,
         )
 
     def scrape_league(self, league: str):
