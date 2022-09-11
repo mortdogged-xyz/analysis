@@ -1,9 +1,10 @@
 import glob
 import json
 import pandas as pd
-from logging import info
+from logging import info, error
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
+from tqdm import tqdm
 
 
 def select_keys(coll, keys, rename=dict()):
@@ -17,7 +18,6 @@ class DataExporter:
 
     def export_all(self):
         files = glob.glob(f"{self.cache_dir}/match-*.json")
-        info(f"Exporting {len(files)} match files")
 
         all_data = []
         m_data = []
@@ -27,57 +27,65 @@ class DataExporter:
         u_data = []
         i_data = []
 
-        for file in files:
-            with open(file, 'r') as f:
+        info(f"Exporting {len(files)} match files")
+        for fname in tqdm(files):
+            with open(fname, 'r') as f:
                 m = json.loads(f.read())
-                all_data.append(m)
+                all_data.append((fname, m))
 
-        for m in all_data:
-            match = {
-                'match_id': m['metadata']['match_id'],
-                'match_datetime': m['info']['game_datetime'],
-                'match_length': m['info']['game_length'],
-            }
-            m_data.append(match)
+        info(f"Exporting {len(all_data)} match results")
+        for (fname ,m) in tqdm(all_data):
+            try:
+                match = {
+                    'match_id': m['metadata']['match_id'],
+                    'match_datetime': m['info']['game_datetime'],
+                    'match_length': m['info']['game_length'],
+                    'tft_set_number': m['info']['tft_set_number'],
+                    'tft_set_name': m['info']['tft_set_core_name'],
+                }
+                m_data.append(match)
 
-            for p in m['info']['participants']:
-                participant = select_keys(p, [
-                    'puuid',
-                    'placement',
-                ])
-                participant_data = select_keys(p, [
-                    'level',
-                    'total_damage_to_players',
-                    'last_round',
-                ])
-                p_data.append(participant_data | participant | match)
-
-                for a in p['augments']:
-                    a_data.append({'augment': a} | participant | match)
-
-                for t in p['traits']:
-                    trait = select_keys(t, [
-                        'name',
-                        'num_units',
-                        'style',
-                        'tier_current',
-                        'tier_total',
-                    ], {'name': 'trait'})
-                    t_data.append(trait | participant | match)
-
-                for u in p['units']:
-                    unit = select_keys(u, [
-                        'character_id',
+                for p in m['info']['participants']:
+                    participant = select_keys(p, [
+                        'puuid',
+                        'placement',
                     ])
-                    unit_data = select_keys(u, [
-                        'name',
-                        'rarity',
-                        'tier',
-                    ], {'name': 'character_name'})
-                    u_data.append(unit | unit_data | participant | match)
+                    participant_data = select_keys(p, [
+                        'level',
+                        'total_damage_to_players',
+                        'last_round',
+                    ])
+                    p_data.append(participant_data | participant | match)
 
-                    for i in u['itemNames']:
-                        i_data.append({'item': i} | unit | participant | match)
+                    for a in p['augments']:
+                        a_data.append({'augment': a} | participant | match)
+
+                    for t in p['traits']:
+                        trait = select_keys(t, [
+                            'name',
+                            'num_units',
+                            'style',
+                            'tier_current',
+                            'tier_total',
+                        ], {'name': 'trait'})
+                        t_data.append(trait | participant | match)
+
+                    for u in p['units']:
+                        unit = select_keys(u, [
+                            'character_id',
+                        ])
+                        unit_data = select_keys(u, [
+                            'name',
+                            'rarity',
+                            'tier',
+                        ], {'name': 'character_name'})
+                        u_data.append(unit | unit_data | participant | match)
+
+                        for i in u['itemNames']:
+                            i_data.append({'item': i} | unit | participant | match)
+            except Exception as e:
+                error(f"Colud not process {fname}")
+                error(e)
 
         matches_df = pd.DataFrame(m_data)
         participants_df = pd.DataFrame(p_data)
@@ -119,7 +127,7 @@ class Data:
 class DataLoader:
     data_dir: str
 
-    def load_all(self, files: List[str] = []):
+    def load_all(self, files: List[str] = [], days_cutoff: int = 7, set_name: Optional[str] = None):
         files = files or [
             "participants",
             "augments",
@@ -129,9 +137,11 @@ class DataLoader:
         ]
 
         data = {}
-        for f in files:
+        for f in tqdm(files):
             path = f"{self.data_dir}/{f}.csv"
             df = pd.read_csv(path, index_col=['match_id', 'puuid'])
+            # if set_name:
+                # df = df[df['tft_set_name'] == set_name]
             data[f] = df
 
         dt = Data(**data)
