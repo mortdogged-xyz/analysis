@@ -1,6 +1,7 @@
 import glob
 import json
 import pandas as pd
+import numpy as np
 from logging import info, error
 from dataclasses import dataclass
 from typing import List, Optional
@@ -140,8 +141,18 @@ class DataLoader:
         for f in tqdm(files):
             path = f"{self.data_dir}/{f}.csv"
             df = pd.read_csv(path, index_col=['match_id', 'puuid'])
-            # if set_name:
-                # df = df[df['tft_set_name'] == set_name]
+
+            # parse date time
+            df['match_datetime'] = pd.to_datetime(df['match_datetime'], unit='ms', origin='unix')
+
+            # filter matches since n days
+            since = np.datetime64('now') - np.timedelta64(days_cutoff, 'D')
+            df = df[df['match_datetime'] >= since]
+
+            # filter by set
+            if set_name:
+                df = df[df['tft_set_name'] == set_name]
+
             data[f] = df
 
         dt = Data(**data)
